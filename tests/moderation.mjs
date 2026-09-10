@@ -7,6 +7,12 @@ writeFileSync(target, ts.transpileModule(readFileSync(new URL('../lib/blog/moder
 try {
  const {analyze} = await import(target.href);
  const good = {status:'approved',severity:0,duration_ms:20,categories:[]};
+ let fetchCalls = 0;
+ globalThis.fetch = async () => { fetchCalls++; return Response.json(good); };
+ for (const endpoint of ['', '   ']) {
+  await assert.rejects(analyze('Olá',undefined,endpoint), /Serviço de publicação ainda não configurado/);
+ }
+ assert.equal(fetchCalls, 0, 'Sem API configurada, nenhuma requisição deve ser enviada.');
  let body;
  globalThis.fetch = async (_, options) => {body=JSON.parse(options.body);return Response.json(good);};
  assert.equal((await analyze('Olá',undefined,'http://api.test')).status,'approved');
@@ -22,5 +28,5 @@ try {
  await assert.rejects(analyze('texto',undefined,'http://api.test'), /inválida/);
  globalThis.fetch = async () => new Response('',{status:503});
  await assert.rejects(analyze('texto',undefined,'http://api.test'), /indisponível/);
- console.log('7 verificações do cliente de moderação passaram.');
+ console.log('9 verificações do cliente de moderação passaram.');
 } finally {unlinkSync(target);}

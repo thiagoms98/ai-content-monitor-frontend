@@ -23,9 +23,11 @@ Publique o conteúdo de `out/` em uma hospedagem de arquivos estáticos. Não é
 
 ## Integração futura com o backend
 
-A interface abre sem backend. Para analisar e publicar posts, será necessário conectar uma API externa compatível. Até lá, tentativas de publicação apresentarão uma mensagem de conexão; não há aprovação simulada.
+A interface abre sem backend. Para analisar e publicar posts, será necessário conectar uma API externa compatível. Sem URL configurada, tentativas de publicação exibem “Serviço de publicação ainda não configurado.”, sem enviar requisições. Não há aprovação simulada.
 
-Copie `.env.example` para `.env.local` e defina `NEXT_PUBLIC_API_URL` (por padrão, `http://localhost:8000`). Reinicie o desenvolvimento ou refaça o build após mudar essa variável. Também é possível informar a URL no painel “Conexão com a API”; essa alteração vale apenas para a sessão.
+Copie `.env.example` para `.env.local` e defina `NEXT_PUBLIC_API_URL` quando o backend estiver disponível. Por padrão, a URL fica vazia. Reinicie o desenvolvimento ou refaça o build após mudar essa variável. Também é possível informar a URL no painel “Conexão com a API”; essa alteração vale apenas para a sessão.
+
+Na Vercel, mantenha `NEXT_PUBLIC_API_URL` ausente ou vazia enquanto não houver backend. Se ela estiver configurada como `http://localhost:8000`, remova esse valor e faça um novo deploy para aplicar a alteração.
 
 O cliente HTTP está em `lib/blog/moderation.ts`. Adapte esse arquivo caso o backend futuro use outro contrato. Atualmente, ele envia `POST /analyze` com JSON:
 

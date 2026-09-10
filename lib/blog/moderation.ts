@@ -3,10 +3,12 @@ export type Analysis = { status: 'approved' | 'blocked'; severity: number; durat
 export type Post = { id: string; text: string; image?: string; createdAt: string; analysis: Analysis };
 export const MAX_IMAGE_BYTES = 4_000_000;
 export async function analyze(text: string, image: string | undefined, endpoint: string): Promise<Analysis> {
+  const apiUrl = endpoint.trim();
+  if (!apiUrl) throw new Error('Serviço de publicação ainda não configurado.');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 60000);
   try {
-    const response = await fetch(`${endpoint.replace(/\/$/, '')}/analyze`, {
+    const response = await fetch(`${apiUrl.replace(/\/$/, '')}/analyze`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, ...(image ? { image: image.split(',')[1] } : {}) }),
       signal: controller.signal, cache: 'no-store', credentials: 'omit',
