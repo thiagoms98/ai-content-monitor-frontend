@@ -8,9 +8,11 @@
   "scripts": {
     "install:ci": "pnpm install --frozen-lockfile",
     "dev": "next dev",
+    "start": "next start",
     "build": "next build",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "test": "node tests/moderation.mjs",
+    "test:api": "node tests/api-smoke.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
